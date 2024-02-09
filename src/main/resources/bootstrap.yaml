@@ -1,0 +1,28 @@
+app:
+  name: canvas.sync
+
+server:
+  port: 8077
+
+spring:
+  application:
+    name: canvas-sync
+  profiles:
+    active: dev
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      jdbc-url: jdbc:postgresql://localhost:5437/canvas?currentSchema=public
+      username: user
+      password: password
+      driver-class-name: org.postgresql.Driver
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 2000000
+      connection-timeout: 30000
+      schema: public
+
+  liquibase:
+    change-log: db-migration/master.xml
+    default-schema: public
+

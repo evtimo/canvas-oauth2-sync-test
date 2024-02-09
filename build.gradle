@@ -54,3 +54,27 @@ dependencyManagement {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
+
+tasks.register('loadEnv', Exec) {
+	workingDir '.'
+	commandLine 'sh', '-c', 'set -a && . ./.env && env'
+	standardOutput = new ByteArrayOutputStream()
+
+	doLast {
+		standardOutput.toString().split("\n").each { line ->
+			def (key, value) = line.split("=", 2)
+			project.ext.set(key, value)
+		}
+	}
+}
+
+bootRun {
+	dependsOn loadEnv
+	doFirst {
+		loadEnv.standardOutput.toString().split("\n").each { line ->
+			def (key, value) = line.split("=", 2)
+			environment key, value
+		}
+	}
+}
+

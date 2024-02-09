@@ -21,6 +21,24 @@ spring:
       max-lifetime: 2000000
       connection-timeout: 30000
       schema: public
+  security:
+    oauth2:
+      client:
+        registration:
+          canvas:
+            clientId: ${OAUTH_CLIENT_ID:0}
+            clientSecret: ${OAUTH_CLIENT_SECRET:X}
+            clientName: Canvas
+            authorizationGrantType: authorization_code
+            redirectUri: "{baseUrl}/login/oauth2/code/canvas"
+            scope: url:GET|/api/v1/auth/user
+            clientAuthenticationMethod: client_secret_post
+        provider:
+          canvas:
+            authorizationUri: ${OAUTH_HOST:0.0.0.0}/login/oauth2/auth
+            tokenUri: ${OAUTH_HOST:0.0.0.0}/login/oauth2/token
+            userInfoUri: ${OAUTH_HOST:0.0.0.0}/api/v1/users/self/profile
+            userNameAttribute: name
 
   liquibase:
     change-log: db-migration/master.xml

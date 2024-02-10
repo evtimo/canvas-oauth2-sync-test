@@ -8,21 +8,52 @@
 </head>
 <body>
 <div class="container text-center" style="margin-top: 20px;">
-    <a href="/oauth2/authorization/canvas" class="btn btn-primary">OAuth Setup</a>
-    <button id="syncButton" class="btn btn-secondary">Start Sync</button>
+    <a href="/oauth2/authorization/canvas" class="btn btn-primary" id="oauthButton">OAuth Setup</a>
+    <button id="syncButton" class="btn btn-secondary">
+        Start Sync
+        <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none; margin-left: 5px;"></span>
+    </button>
+    <div id="responseMessage" class="mt-3"></div>
 </div>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
     document.getElementById('syncButton').addEventListener('click', function() {
+        const syncButton = document.getElementById('syncButton');
+        const oauthButton = document.getElementById('oauthButton');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const responseMessage = document.getElementById('responseMessage');
+
+        // Disable buttons and show spinner
+        syncButton.disabled = true;
+        oauthButton.disabled = true;
+        loadingSpinner.style.display = 'inline-block';
+        responseMessage.innerHTML = ''; // Clear previous messages
+
         fetch('/sync', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({})
-        });
+        })
+            .then(response => response.text().then(text => { // Always read the text
+                if (!response.ok) throw new Error(text); // Use server's response text for the error
+                return text; // For successful responses, just return the text
+            }))
+            .then(data => {
+                // Display success message
+                responseMessage.innerHTML = `<div class="alert alert-success" role="alert">${data}</div>`;
+            })
+            .catch(error => {
+                // Display error message from the server or a generic error if none is provided
+                responseMessage.innerHTML = `<div class="alert alert-danger" role="alert">${error.message}</div>`;
+            })
+            .finally(() => {
+                // Re-enable buttons and hide spinner regardless of outcome
+                syncButton.disabled = false;
+                oauthButton.disabled = false;
+                loadingSpinner.style.display = 'none';
+            });
     });
 </script>
 </body>

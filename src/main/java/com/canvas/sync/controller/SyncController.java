@@ -1,5 +1,6 @@
 package com.canvas.sync.controller;
 
+import com.canvas.sync.aop.annotation.Audit;
 import com.canvas.sync.service.SyncService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
@@ -19,12 +21,15 @@ public class SyncController {
 
     SyncService syncService;
 
+    @Audit
     @PostMapping
     public ResponseEntity<String> sync() {
-        log.info("[SyncController.sync] start sync");
-        syncService.syncContent();
-        log.info("[SyncController.sync] end sync");
-        return ResponseEntity.ok("OK");
+        return syncService.syncContent()
+            .then(Mono.just(ResponseEntity.ok("OK")))
+            .onErrorResume(e -> {
+                String errorMessage = "Sync operation failed: " + e.getMessage();
+                return Mono.just(ResponseEntity.status(500).body(errorMessage));
+            }).block();
     }
 
 }

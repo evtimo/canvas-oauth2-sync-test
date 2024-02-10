@@ -11,6 +11,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
+import lombok.SneakyThrows;
 import org.hibernate.Session;
 import org.hibernate.engine.spi.ActionQueue;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -43,10 +44,12 @@ public class BaseStoreImpl<T extends BaseEntity> implements BaseStore<T> {
         return entity;
     }
 
+    @SneakyThrows
     @Transactional
     @Override
     public void saveAll(Collection<T> entities) {
         entities.forEach(e -> em.merge(e));
+        //Thread.sleep(5000);  // uncomment for test async non-blocking batch fetching
         /*entities.forEach(entity -> {
             em.persist(entity);
             flushAndClearIfBatchSizeReached(BATCH_SIZE);

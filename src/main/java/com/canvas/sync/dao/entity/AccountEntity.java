@@ -23,4 +23,5 @@ public class AccountEntity extends BaseEntity {
     private Long id;
 
     private String name;
+
 }

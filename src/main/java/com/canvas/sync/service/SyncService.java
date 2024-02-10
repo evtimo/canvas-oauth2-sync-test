@@ -1,5 +1,6 @@
 package com.canvas.sync.service;
 
+import com.canvas.sync.aop.annotation.Audit;
 import com.canvas.sync.dao.entity.AccountEntity;
 import com.canvas.sync.dao.entity.CourseEntity;
 import com.canvas.sync.dao.store.AccountStore;
@@ -39,6 +40,7 @@ public class SyncService {
     @Value("${api.batch-size}")
     private int BATCH_SIZE;
 
+    @Audit
     public void syncContent() {
         fetchAndSaveAccounts(API_HOST + API_ACCOUNTS_ENDPOINT);
         fetchCoursesAndSaveBatch(API_HOST + API_COURSES_ENDPOINT, BATCH_SIZE);

@@ -35,4 +35,18 @@
                                  referencedTableName="account" referencedColumnNames="id"/>
     </changeSet>
 
+    <!-- Add last_sync_at column to Account table -->
+    <changeSet id="add-last_sync_at-to-account" author="evtimo">
+        <addColumn tableName="account">
+            <column name="last_sync_at" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Add last_sync_at column to Course table -->
+    <changeSet id="add-last_sync_at-to-course" author="evtimo">
+        <addColumn tableName="course">
+            <column name="last_sync_at" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

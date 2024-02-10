@@ -53,3 +53,7 @@ api:
   courses: "/api/v1/courses"
   accounts: "/api/v1/accounts"
   batch-size: 2
+
+logging:
+  level:
+    com.canvas.sync: ${APP_LOG_LEVEL:DEBUG}

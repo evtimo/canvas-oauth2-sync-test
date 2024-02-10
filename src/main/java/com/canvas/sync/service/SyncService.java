@@ -40,7 +40,7 @@ public class SyncService {
 
     @NonFinal
     @Value("${api.batch-size}")
-    private int BATCH_SIZE;
+    private int BATCH_SIZE = 1;
 
     public Mono<Void> syncContent() {
         Mono<Void> accountsMono = fetchAndSaveAccounts(API_HOST + API_ACCOUNTS_ENDPOINT);

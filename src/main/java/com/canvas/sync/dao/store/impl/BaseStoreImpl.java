@@ -3,8 +3,6 @@ package com.canvas.sync.dao.store.impl;
 import com.canvas.sync.dao.entity.BaseEntity;
 import com.canvas.sync.dao.store.BaseStore;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -13,10 +11,10 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
+import org.hibernate.Session;
+import org.hibernate.engine.spi.ActionQueue;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +31,8 @@ public class BaseStoreImpl<T extends BaseEntity> implements BaseStore<T> {
     @Autowired
     protected JPAQueryFactory jpaQueryFactory;
 
+    private final int BATCH_SIZE = 10;
+
     public BaseStoreImpl(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
@@ -46,7 +46,12 @@ public class BaseStoreImpl<T extends BaseEntity> implements BaseStore<T> {
     @Transactional
     @Override
     public void saveAll(Collection<T> entities) {
-        entities.forEach(e -> em.persist(e));
+        entities.forEach(e -> em.merge(e));
+        /*entities.forEach(entity -> {
+            em.persist(entity);
+            flushAndClearIfBatchSizeReached(BATCH_SIZE);
+        });
+        flushAndClear();*/
     }
 
     @Transactional
@@ -70,6 +75,16 @@ public class BaseStoreImpl<T extends BaseEntity> implements BaseStore<T> {
     @Transactional
     public void deleteById(Long id) {
         em.remove(findById(id));
+    }
+
+    protected void flushAndClearIfBatchSizeReached(int batchSize) {
+        Session session = em.unwrap(Session.class);
+        SessionImplementor sessionImplementor = (SessionImplementor) session;
+        ActionQueue actionQueue = sessionImplementor.getActionQueue();
+
+        if (actionQueue.numberOfCollectionRemovals() % batchSize == 0) {
+            flushAndClear();
+        }
     }
 
     protected void flushAndClear() {

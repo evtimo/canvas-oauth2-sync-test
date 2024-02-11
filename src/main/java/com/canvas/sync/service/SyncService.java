@@ -45,7 +45,7 @@ public class SyncService {
     public Mono<Void> syncContent() {
         Mono<Void> accountsMono = fetchAndSaveAccounts(API_HOST + API_ACCOUNTS_ENDPOINT);
         Mono<Void> coursesMono = fetchCoursesAndSaveBatch(API_HOST + API_COURSES_ENDPOINT, BATCH_SIZE);
-        // TODO: reactive loader response with % of sync completion
+        // TODO: reactive loader response with % of sync courses completion
         // Return a Mono<Void> that completes when both operations are complete
         return Mono.when(accountsMono, coursesMono);
     }

@@ -48,8 +48,8 @@ public class BaseStoreImpl<T extends BaseEntity> implements BaseStore<T> {
     @Transactional
     @Override
     public void saveAll(Collection<T> entities) {
+        Thread.sleep(2000);  // uncomment for test async non-blocking batch fetching
         entities.forEach(e -> em.merge(e));
-        //Thread.sleep(5000);  // uncomment for test async non-blocking batch fetching
         /*entities.forEach(entity -> {
             em.persist(entity);
             flushAndClearIfBatchSizeReached(BATCH_SIZE);

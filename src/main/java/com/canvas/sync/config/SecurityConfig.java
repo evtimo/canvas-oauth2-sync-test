@@ -16,6 +16,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
             .oauth2Login(oauth2Login -> oauth2Login
                 .defaultSuccessUrl("/")
+                .loginPage("/")
             );
         return http.build();
     }

@@ -14,7 +14,7 @@ Note: if you run project from console (not from IDEA), check `echo $JAVA_HOME` r
 ### How to run:
 
 1. Clone repository
-2. Get your CLIEND_ID (Canvas -> Admin -> Developer keys -> Details) and CLIENT_SECRET (Show key)
+2. Get your CLIENT_ID (Canvas -> Admin -> Developer keys -> Details) and CLIENT_SECRET (Show key)
 3. Put these variables into `.env` (or just put it directly into `bootstrap.yaml` file), add host variable
 4. Run `docker-compose up -d` from root directory to create a local database
 5. Run `./gradlew bootRun` to start the app (in this case all .env will be attached to app automatically), 
@@ -38,9 +38,9 @@ Note: if you run project from console (not from IDEA), check `echo $JAVA_HOME` r
 - Fetching data and setting `last_sync_at` for `account` done via JPA and annotation, for `courses` via JDBC query (for performance)
 - The consistency and equality of entities based on `id` field
 - If any data will be deleted from Canvas API, it will NOT be deleted from local database after next sync
-- Added @Audit aop annotation to log exceptions, method start, end execution time
+- Added @Audit aop annotation to log exceptions, method start, end, execution time
 
-How to check that `accounts` are fetching and storing really in parallel: there are added `Threas.sleep()` in `*StoreImpl` classes, 
+How to check that `accounts` are fetching and storing really in parallel: there are added `Thread.sleep()` in `*StoreImpl` classes, 
 and always the total execution time of `sync` method ~ 'time of accounts fetching + time of ONE courses batch fetching'
 
 

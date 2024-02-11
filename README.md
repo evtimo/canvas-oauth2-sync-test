@@ -1,5 +1,4 @@
-## This projects provides OAuth2 with https://canvas.instructure.com/ and allows to fetch accounts + courses, 
-save it into local database, logging the sync process.
+## Test project provides OAuth2 with [Canvas](https://canvas.instructure.com/) and allows to fetch data, save into local DB, log the sync process.
 
 ### Technology stack
 

@@ -42,3 +42,7 @@ Note: if you run project from console (not from IDEA), check `echo $JAVA_HOME` r
 
 How to check that `accounts` are fetching and storing really in parallel: there are added `Threas.sleep()` in `*StoreImpl` classes, 
 and always the total execution time of `sync` method ~ 'time of accounts fetching + time of ONE courses batch fetching'
+
+
+https://github.com/evtimo/canvas-oauth2-sync-test/assets/22182922/20fcb049-8a62-47ba-b646-54aae731a876
+

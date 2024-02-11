@@ -46,8 +46,10 @@ public class SyncService {
         Mono<Void> accountsMono = fetchAndSaveAccounts(API_HOST + API_ACCOUNTS_ENDPOINT);
         Mono<Void> coursesMono = fetchCoursesAndSaveBatch(API_HOST + API_COURSES_ENDPOINT, BATCH_SIZE);
         // TODO: reactive loader response with % of sync courses completion
-        // Return a Mono<Void> that completes when both operations are complete
-        return Mono.when(accountsMono, coursesMono);
+        // Chain accountsMono and coursesMono, so coursesMono starts after accountsMono completes
+        return accountsMono
+            .then(coursesMono) // Start coursesMono after accountsMono completes
+            .then(); // Return a Mono<Void> that completes when both operations are complete
     }
 
     private Mono<Void> fetchCoursesAndSaveBatch(String baseUrl, int pageSize) {

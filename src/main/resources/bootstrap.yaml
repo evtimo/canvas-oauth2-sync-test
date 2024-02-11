@@ -1,8 +1,5 @@
 HOST: ${OAUTH_HOST:http://0.0.0.0}
 
-app:
-  name: canvas.sync
-
 server:
   port: 8077
 
@@ -14,7 +11,7 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      jdbc-url: jdbc:postgresql://localhost:5437/canvas?currentSchema=public
+      jdbc-url: jdbc:postgresql://localhost:5437/canvas?currentSchema=public?serverTimezone=UTC
       username: user
       password: password
       driver-class-name: org.postgresql.Driver

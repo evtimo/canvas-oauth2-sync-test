@@ -34,6 +34,7 @@ Note: if you run project from console (not from IDEA), check `echo $JAVA_HOME` r
 - Saving of `accounts` and `courses` are done sequentially, but storing of `courses` themselves done in parallel
 - If there are any exceptions during the sync, it will not terminate the process, error will be skipped and logged
 - Both entities `accounts` and `courses` store `last_sync_at` field, it responsible for the last create/update of entity
+- All `last_sync_at` is stored in database for UTC time zone no matter how it was set (by annotation or explicitly jdbc)
 - Fetching data and setting `last_sync_at` for `account` done via JPA and annotation, for `courses` via JDBC query (for performance)
 - The consistency and equality of entities based on `id` field
 - If any data will be deleted from Canvas API, it will NOT be deleted from local database after next sync

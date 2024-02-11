@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Collection;
 
 @Slf4j
@@ -28,7 +29,7 @@ public class CourseStoreImpl extends BaseStoreImpl<CourseEntity> implements Cour
     @Override
     @Transactional
     public void saveAll(Collection<CourseEntity> courses) {
-        Thread.sleep(1000);
+        Thread.sleep(2000); // Simulation of long operatins to show that course batches saved in parallel
         try (Connection connection = dataSource.getConnection()) {
             String sql = "INSERT INTO course (id, name, root_account_id, last_sync_at) VALUES (?, ?, ?, ?) ON CONFLICT (id) " +
                 "DO UPDATE SET name = EXCLUDED.name, root_account_id = EXCLUDED.root_account_id, last_sync_at = EXCLUDED.last_sync_at";
@@ -37,7 +38,7 @@ public class CourseStoreImpl extends BaseStoreImpl<CourseEntity> implements Cour
                     statement.setLong(1, course.getId());
                     statement.setString(2, course.getName());
                     statement.setLong(3, course.getRootAccountId());
-                    statement.setObject(4, LocalDateTime.now()); // Adapt as necessary
+                    statement.setObject(4, OffsetDateTime.now(ZoneOffset.UTC)); // Adapt as necessary
                     statement.addBatch();
                 }
                 statement.executeBatch();
